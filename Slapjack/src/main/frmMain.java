@@ -104,7 +104,7 @@ public class frmMain extends javax.swing.JFrame {
         }
     }
     
-    public class Uno {
+    public class Uno extends Thread{
         private int numeroCarta;
         
         public Uno(){
@@ -158,6 +158,11 @@ public class frmMain extends javax.swing.JFrame {
 
         public int getNumeroCarta() {
             return numeroCarta;
+        }
+        
+        @Override
+        public void run() {
+            comenzar_juego();
         }
     }
 
@@ -271,7 +276,7 @@ public class frmMain extends javax.swing.JFrame {
 
     private void btnJugarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJugarActionPerformed
         generador = new Uno();
-        generador.comenzar_juego();
+        generador.start();
         player1.start();
         player2.start();
         player3.start();
