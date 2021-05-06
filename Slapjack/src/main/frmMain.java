@@ -286,7 +286,11 @@ public class frmMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnJugarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJugarActionPerformed
+        model.setRowCount(0);
         generador = new Uno();
+        player1 = new Jugador(1);
+        player2 = new Jugador(2);
+        player3 = new Jugador(3);
         generador.start();
         player1.start();
         player2.start();
