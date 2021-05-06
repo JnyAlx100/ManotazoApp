@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -30,6 +31,7 @@ public class frmMain extends javax.swing.JFrame {
     private Jugador player3;
     String[] columnNames = {"Puesto", "Jugador", "Tiempo"};
     DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+    private static Semaphore mutex = new Semaphore(1, true);
 
     /**
      * Creates new form frmMain
@@ -68,8 +70,15 @@ public class frmMain extends javax.swing.JFrame {
         
         @Override
         public void run(){
-            System.out.println("Jugador " + this.numero + " listo para jugar");
-            System.out.println("Jugador " + this.numero + " está atento al mazo");
+            try {
+                mutex.acquire(); // Entra a la región crítica
+                System.out.println("Jugador " + this.numero + " listo para jugar");
+                System.out.println("Jugador " + this.numero + " está atento al mazo");
+            } catch (InterruptedException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
             while(!intento) {
                 if (generador.getNumeroCarta() == 5) {
                     manotazo();
@@ -90,7 +99,9 @@ public class frmMain extends javax.swing.JFrame {
                     Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            mutex.release(); // Sale de la región crítica
         }
+        
         
         public void manotazo() {
             Image img = new ImageIcon(this.getClass().getResource("/img/P"+String.valueOf(numero)+"-playing.png")).getImage();
